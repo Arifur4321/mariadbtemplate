@@ -5,13 +5,12 @@ app = Flask(__name__)
 
 # define database credentials
 db_config = {
-   'host': '192.168.54.206',
-   'port': 3307,
+   'host': '127.0.0.1',
+   'port': 3306,
   'user': 'root',
   'password': '1234',
   'database': 'dronescanner'
 }
-
 
 @app.route('/')
 def index():

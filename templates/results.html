@@ -1,99 +1,119 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-* {
-  box-sizing: border-box;
-}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome CSS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-#myInput {
-  background-image: url('/css/searchicon.png');
-  background-position: 10px 10px;
-  background-repeat: no-repeat;
-  width: 100%;
-  font-size: 16px;
-  padding: 12px 20px 12px 40px;
-  border: 1px solid #ddd;
-  margin-bottom: 12px;
-}
+  <style>
 
-#myTable {
-  border-collapse: collapse;
-  width: 100%;
-  border: 1px solid #ddd;
-  font-size: 18px;
-}
+        /* Additional CSS styles for table rows */
+        .header {
+      background-color: #f8f9fa;
+    }
 
-#myTable th, #myTable td {
-  text-align: left;
-  padding: 12px;
-}
+    .odd {
+      background-color: #f0f0f0;
+    }
 
-#myTable tr {
-  border-bottom: 1px solid #ddd;
-}
+    .even {
+      background-color: #e9ecef;
+    }
 
-#myTable tr.header, #myTable tr:hover {
-  background-color: #f1f1f1;
-}
-</style>
+    /* Custom styles for the search icon */
+    .input-group-prepend .input-group-text {
+      background-color: #f8f9fa;
+      border: none;
+    }
+  
+  </style>
 </head>
 <body>
+  <h2>Search Results</h2>
 
-<h2>Search Results</h2>
+  <div class="container mb-3">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fas fa-search"></i></span> <!-- Search icon -->
+      </div>
+      <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name" class="form-control">
+    </div>
+  </div>
 
-<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+  <div class="container">
+    <table id="myTable" class="table table-bordered table table-striped  ">
+      <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>Mac Address</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>Atitude</th>
+          <th>Height</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+        <tr  >
+          <td>{{ row[0] }}</td>
+          <td>{{ row[1] }}</td>
+          <td>{{ row[2] }}</td>
+          <td>{{ row[3] }}</td>
+          <td>{{ row[4] }}</td>
+          <td>{{ row[5] }}</td>
+          <td>{{ row[6] }}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button>
+            <button class="btn btn-primary btn-sm" onclick="modifyRow(this)">
+              <i class="fas fa-edit"></i> <!-- Modify icon -->
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-<table id="myTable">
-  <tr class="header">
-     
+
+  <script>
    
-    <th>ID</th>
-    <th>Mac Address</th>
-    <th>Latitude</th>
-    <th>Longitude</th>
-    <th>Atitude</th>
-    <th>Height</th>
-    <th>Date </th>
-  </tr>
-  {% for row in data %}
-  <tr>
-    <td>{{ row[0] }}</td>
-    <td>{{ row[1] }}</td>
-    <td>{{ row[2] }}</td>
-    <td>{{ row[3] }}</td>
-    <td>{{ row[4] }}</td>
-    <td>{{ row[5] }}</td>
-    <td>{{ row[6] }}</td> 
-  </tr>
-  {% endfor %}
-</table>
 
-<script>
-  function myFunction() {
+    function myFunction() {
       var input, filter, table, tr, td, i, txtValue;
       input = document.getElementById("myInput");
       filter = input.value.toUpperCase();
       table = document.getElementById("myTable");
       tr = table.getElementsByTagName("tr");
-      for (i = 0; i < tr.length; i++) {
-          var allTDs = tr[i].getElementsByTagName("td");
+      for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+        var allTDs = tr[i].getElementsByTagName("td");
+        var found = false; // Flag to indicate if the filter matches any content in the row
 
-          for (index = 0; index < allTDs.length; index++) {
-              txtValue = allTDs[index].textContent || allTDs[index].innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                  tr[i].style.display = "";
-                  break;
-              } else {
-                  tr[i].style.display = "none";
-              }
+        for (index = 0; index < allTDs.length - 1; index++) { // Exclude the last column (Delete button column)
+          txtValue = allTDs[index].textContent || allTDs[index].innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            found = true;
+            break;
           }
-      }
-  }
+        }
 
-</script>
+        if (found) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+
+    function deleteRow(btn) {
+      var row = btn.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+    }
+  </script>
 
 </body>
 </html>

@@ -31,11 +31,12 @@
   
   </style>
 </head>
-<body>
+<body >
   
  <h2  style="margin-top:60px;"></h2>
-  <div class="container mb-3">
 
+ <div class="container-fluid px-5"  >
+ 
     <div class="input-group">
       <div class="input-group-prepend">
             <h2  >Search Results</h2>
@@ -43,9 +44,9 @@
       </div>
       <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name" class="form-control">
     </div>
-  </div>
+ 
 
-  <div class="container">
+ 
     <table id="myTable" class="table table-bordered table table-striped  ">
       <thead class="thead-dark">
         <tr>
@@ -79,8 +80,11 @@
         {% endfor %}
       </tbody>
     </table>
-  </div>
+   
 
+
+  </div>
+  
 
   <script>
    

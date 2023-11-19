@@ -119,6 +119,38 @@
       var row = btn.parentNode.parentNode;
       row.parentNode.removeChild(row);
     }
+
+    function modifyRow(btn) {
+  var row = btn.parentNode.parentNode;
+  var cells = row.getElementsByTagName("td");
+  var rowData = {};
+
+  for (var i = 0; i < cells.length - 1; i++) { // Exclude the last column (Action buttons column)
+    var header = document.querySelector("#myTable th:nth-child(" + (i + 1) + ")").innerText;
+    rowData[header] = cells[i].innerText;
+  }
+
+  // Assuming you have a way to collect updated data from the user, let's call it updatedData
+  var updatedData = prompt("Enter updated data (comma-separated values for each field):");
+  if (updatedData !== null) {
+    var requestData = { "rowData": rowData, "updatedData": updatedData };
+
+    // Send the updated data to the server using AJAX (Assuming it's a PHP endpoint named 'update.php')
+    $.ajax({
+      type: "POST",
+      url: "update.php",
+      data: requestData,
+      success: function(response) {
+        alert(response); // Show the response from the server
+        // Optionally, update the UI or perform actions based on the server's response
+      },
+      error: function(xhr, status, error) {
+        console.error(xhr.responseText); // Log error message if any
+      }
+    });
+  }
+}
+
   </script>
 
 </body>

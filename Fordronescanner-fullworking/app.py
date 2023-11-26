@@ -18,6 +18,7 @@ def index():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     result = cur.execute("SELECT * FROM informationdrone ORDER BY ID")
     employee = cur.fetchall()
+    print("see all array ",employee)
     return render_template('index.html', employee=employee)
  
 @app.route("/ajax_add",methods=["POST","GET"])

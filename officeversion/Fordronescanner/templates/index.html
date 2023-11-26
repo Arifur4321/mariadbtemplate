@@ -169,9 +169,9 @@ $(document).ready(function(){
     $(document).on("click", ".delete", function(){
         $(this).parents("tr").remove();
         $(".add-new").removeAttr("disabled");
-        var ID = $(this).attr("ID");
-        var id = $(this).data("id");
-        var string = ID;
+        var id = $(this).attr("id");
+       
+        var string = id;
         $.post("/ajax_delete", { string: string}, function(data) {
             $("#displaymessage").html(data);
             $("#displaymessage").show();
@@ -179,8 +179,8 @@ $(document).ready(function(){
     });
     // update rec row on edit button click
     $(document).on("click", ".update", function(){
-        var ID = $(this).attr("ID");
-        var string = ID;
+        var id = $(this).attr("id");
+        var string = id;
         var  txtMacAddress = $("#txtMacAddress").val();
         var txtLatitude = $("#txtLatitude").val();
         var txtLongitude = $("#txtLongitude").val();
@@ -258,7 +258,7 @@ $(document).ready(function(){
                         <th>MacAddress</th>
                         <th>Latitude</th>
                         <th>Longitude</th>
-                        <th>Atitude</th>
+                        <th>Altitude</th>
                         <th>Height</th>
                         <th>dateandtime</th>
                         <th>Actions</th>
@@ -267,22 +267,17 @@ $(document).ready(function(){
                 <tbody>
                     {% for row in employee %}    
                     <tr>
-                        <td>{{ row[1] }}</td>
-                        <td>{{ row[2] }}</td>
-                        <td>{{ row[3] }}</td>
-                        <td>{{ row[4] }}</td>
-                        <td>{{ row[5] }}</td>
-                        <td>{{ row[6] }}</td> 
+                        <td>{{row.macaddress}}</td>
+                        <td>{{row.Lat}}</td>
+                        <td>{{row.Lon}}</td>
+                        <td>{{row.Altitude}}</td>
+                        <td>{{row.height}}</td>
+                        <td>{{row.dateandtime}}</td>
                         <td>
                            
-                            <a class="add" title="Add" data-toggle="tooltip" data-id="{{row.ID}}"><i class="fa fa-user-plus"></i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip" data-id="{{row.ID}}"><i class="fa fa-pencil"></i></a>
-                            <a class="delete" title="Delete" data-toggle="tooltip" data-id="{{row.ID}}"><i class="fa fa-trash-o"></i></a>
-
-                           
-
-                      
-                           
+                            <a class="add" title="Add" data-toggle="tooltip" name="{{row.id}}" data-id="{{row.id}}"><i class="fa fa-user-plus"></i></a>
+                            <a class="edit" title="Edit" data-toggle="tooltip" name="{{row.id}}" data-id="{{row.id}}"><i class="fa fa-pencil"></i></a>
+                            <a class="delete" title="Delete" data-toggle="tooltip" name="{{row.id}}" data-id="{{row.id}}"><i class="fa fa-trash-o"></i></a>
                             
                         </td>
                     </tr>   

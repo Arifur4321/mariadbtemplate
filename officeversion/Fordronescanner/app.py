@@ -10,7 +10,7 @@ app.secret_key = "caircocoders-ednalan"
 # define database credentials
 db_config = {
    'host': '127.0.0.1',
-   'port': 3307,
+   'port': 3306,
   'user': 'root',
   'password': '1234',
   'database': 'dronescanner'
@@ -20,11 +20,16 @@ db_config = {
 @app.route('/')
 def index():
     cur = mysql.connector.connect(**db_config)
-    mycursor = cur.cursor()
+    cursor = cur.cursor(dictionary=True) 
+    query = "SELECT * FROM informationdronenew"  # Replace 'your_table' with your actual table name
+    cursor.execute(query)
+
+# Fetch all rows as dictionaries
+    employee = cursor.fetchall()
+     
     # cur = mysql.connection.cursor()
-    # Now you can execute queries using `cur`
-    result = mycursor.execute("SELECT * FROM informationdronenew ")
-    employee = mycursor.fetchall()
+    
+    print("see all array ",employee)
     return render_template('index.html', employee=employee)
  
 @app.route("/ajax_add",methods=["POST","GET"])
@@ -74,7 +79,7 @@ def ajax_update():
         txtAtitude = request.form['txtAtitude']
         txtHeight = request.form['txtHeight']
         txtdateandtime = request.form['txtdateandtime']
-        print(string)
+        print("getID-------------------------------------------:", string)
         mycursor.execute("UPDATE informationdronenew SET macaddress = %s, Lat  = %s, Lon  = %s  , Altitude = %s , height = %s , dateandtime = %s WHERE ID = %s ", [txtMacAddress, txtLatitude, txtLongitude,txtAtitude,txtHeight,txtdateandtime, string])
         cur.commit()       
         mycursor.close()
@@ -82,21 +87,32 @@ def ajax_update():
     return jsonify(msg)    
 
 
-@app.route("/ajax_delete",methods=["POST","GET"])
+@app.route("/ajax_delete", methods=["POST"])
 def ajax_delete():
-    cur = mysql.connector.connect(**db_config)
-    mycursor = cur.cursor()
-    if request.method == 'POST':
-        getID = request.form['string']
-        print("getID23",getID)
-        mycursor.execute('DELETE FROM informationdrone WHERE ID = {0}'.format(getID))
-        cur.commit()       
-        mycursor.close()
+    try:
+        con = mysql.connector.connect(**db_config)
+        cursor = con.cursor()
 
-        
+        if request.method == 'POST':
+            getID = request.form['string']
+            print("getID--------------------///////////:", getID)
 
-        msg = 'Record deleted successfully'   
-    return jsonify(msg) 
-     
+            # Use parameterized query to prevent SQL injection
+            delete_query = 'DELETE FROM informationdronenew WHERE ID = %s'
+            cursor.execute(delete_query, (getID,))
+
+            # Commit changes to the database
+            con.commit()
+
+            cursor.close()
+            con.close()
+
+            return "Deleted successfully"  # Return a success message
+
+    except mysql.connector.Error as e:
+        print("Error:", e)
+        return "An error occurred while deleting data"  # Return an error message
+
+
 if __name__ == "__main__":
     app.run(debug=True)

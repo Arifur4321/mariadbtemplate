@@ -1,12 +1,13 @@
 #app.py
 from flask import Flask, render_template, redirect, request, flash, jsonify
-from flask_mysqldb import MySQL,MySQLdb #pip install flask-mysqldb https://github.com/alexferl/flask-mysqldb
+from flask_mysqldb import MySQL, MySQLdb
+
  
 app = Flask(__name__)
        
 app.secret_key = "caircocoders-ednalan"
        
-app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_HOST'] = '192.168.54.206'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '1234'
 app.config['MYSQL_DB'] = 'dronescanner'
@@ -48,7 +49,7 @@ def ajax_add():
         elif txtdateandtime == '':
            msg = 'Please Input dateandtime'     
         else:        
-            cur.execute("INSERT INTO informationdrone (MacAddress,Latitude,Longitude, Atitude, Height, dateandtime) VALUES (%s,%s,%s,%s,%s,%s)",[txtMacAddress,txtLatitude,txtLongitude,txtAtitude,txtHeight,txtdateandtime])
+            cur.execute("INSERT INTO informationdrone (MacAddress,Latitude,Longitude, Altitude, Height, dateandtime) VALUES (%s,%s,%s,%s,%s,%s)",[txtMacAddress,txtLatitude,txtLongitude,txtAtitude,txtHeight,txtdateandtime])
             mysql.connection.commit()       
             cur.close()
             msg = 'New record created successfully'   
@@ -67,7 +68,7 @@ def ajax_update():
         txtHeight = request.form['txtHeight']
         txtdateandtime = request.form['txtdateandtime']
         print(string)
-        cur.execute("UPDATE informationdrone SET MacAddress = %s, Latitude = %s, Longitude = %s  , Atitude = %s , Height = %s , dateandtime = %s WHERE ID = %s ", [txtMacAddress, txtLatitude, txtLongitude,txtAtitude,txtHeight,txtdateandtime, string])
+        cur.execute("UPDATE informationdrone SET MacAddress = %s, Latitude = %s, Longitude = %s  , Altitude = %s , Height = %s , dateandtime = %s WHERE ID = %s ", [txtMacAddress, txtLatitude, txtLongitude,txtAtitude,txtHeight,txtdateandtime, string])
         mysql.connection.commit()       
         cur.close()
         msg = 'Record successfully Updated'   
